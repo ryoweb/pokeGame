@@ -45,26 +45,28 @@ export default function Battle() {
         if (myPoke && randomPoke) {
             const myPower = myPoke.power;
             const randomPower = randomPoke.power;
-            if (myPower > randomPower) {
-                const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
-                catchedPokes.push(randomPoke);
-                localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
-                alert("かった！かつとポケモンはゲットできるよ！");
+            if (typeof localStorage !== 'undefined') {
+                if (myPower > randomPower) {
+                    const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
+                    catchedPokes.push(randomPoke);
+                    localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
+                    alert("かった！かつとポケモンはゲットできるよ！");
 
-                setRandomPoke(null);
-                setMyPoke(null);
-                fetchRandomPokemon();
+                    setRandomPoke(null);
+                    setMyPoke(null);
+                    fetchRandomPokemon();
 
-            } else if (myPower < randomPower) {
-                alert("まけた！ざんねん！");
-                setRandomPoke(null);
-                setMyPoke(null);
-                fetchRandomPokemon();
-            } else {
-                alert("あいこ");
-                setRandomPoke(null);
-                setMyPoke(null);
-                fetchRandomPokemon();
+                } else if (myPower < randomPower) {
+                    alert("まけた！ざんねん！");
+                    setRandomPoke(null);
+                    setMyPoke(null);
+                    fetchRandomPokemon();
+                } else {
+                    alert("あいこ");
+                    setRandomPoke(null);
+                    setMyPoke(null);
+                    fetchRandomPokemon();
+                }
             }
         }
     };

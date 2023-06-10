@@ -6,8 +6,11 @@ export default function Zukan() {
     const [pokedex, setPokedex] = useState([]);
 
     useEffect(() => {
-        const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
-        setPokedex(catchedPokes);
+        if (typeof localStorage !== 'undefined') {
+
+            const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
+            setPokedex(catchedPokes);
+        }
     }, []);
 
     const renderPokedex = () => {

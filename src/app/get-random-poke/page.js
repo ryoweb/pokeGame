@@ -39,44 +39,47 @@ export default function GetRandomPoke() {
 
   // ポケモンを捕獲する
   const handleCatch = () => {
-    if (isLoading || !randomPoke) {
-      // 画像がまだロードされていない場合やローディング中の場合はクリックを無効化
-      return;
-    }
+    if (typeof localStorage !== 'undefined') {
 
-    const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
-    const random = Math.random();
-    // デフォルト捕獲率を70%に設定
-    let captureRate = 0.7;
+      if (isLoading || !randomPoke) {
+        // 画像がまだロードされていない場合やローディング中の場合はクリックを無効化
+        return;
+      }
 
-    // statusが500を超えると捕獲率を40%にする
-    if (randomPoke.power > 500) {
-      captureRate = 0.4;
-    }
+      const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
+      const random = Math.random();
+      // デフォルト捕獲率を70%に設定
+      let captureRate = 0.7;
 
-    // statusが600を超えると捕獲率を30%にする
-    if (randomPoke.power > 600) {
-      captureRate = 0.3;
-    }
+      // statusが500を超えると捕獲率を40%にする
+      if (randomPoke.power > 500) {
+        captureRate = 0.4;
+      }
 
-    if (random < captureRate) {
-      catchedPokes.push(randomPoke);
-      localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
-      // alert("つかまえた！〇")
-      setTimeout(() => {
-        alert("つかまえた！〇");
-      }, 3000);
-      //nullに
-      setRandomPoke(null);
-    } else {
-      // alert("にげられた！×");
-      setTimeout(() => {
-        alert("にげられた！×");
-      }, 3000);
-      setRandomPoke(null);
+      // statusが600を超えると捕獲率を30%にする
+      if (randomPoke.power > 600) {
+        captureRate = 0.3;
+      }
+
+      if (random < captureRate) {
+        catchedPokes.push(randomPoke);
+        localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
+        // alert("つかまえた！〇")
+        setTimeout(() => {
+          alert("つかまえた！〇");
+        }, 3000);
+        //nullに
+        setRandomPoke(null);
+      } else {
+        // alert("にげられた！×");
+        setTimeout(() => {
+          alert("にげられた！×");
+        }, 3000);
+        setRandomPoke(null);
+      }
+      setIsLoading(true);
+      // fetchRandomPokemon();
     }
-    setIsLoading(true);
-    // fetchRandomPokemon();
   };
 
   return (

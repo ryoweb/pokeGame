@@ -42,19 +42,35 @@ export default function ShowTemoti() {
         >
             {japaneseName && <div>{japaneseName}</div>}
             <img
-                className="w-32 h-32"
+                style={{
+                    width: '200px',
+                    height: '200px',
+                }}
                 src={randomPoke?.sprites.other['official-artwork'].front_default}
             />
 
             {/* このポケモンを削除する */}
-            <div className="mt-4">
+            <div>
                 <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    style={{
+                        backgroundColor: '#ff0000',
+                        color: '#ffffff',
+                        fontWeight: 'bold',
+                        padding: '8px 16px',
+                        borderRadius: '4px',
+                        ':hover': {
+                            backgroundColor: '#ff0000',
+                            opacity: '0.8',
+                        },
+
+                    }}
                     onClick={() => {
-                        const storedPokes = JSON.parse(localStorage.getItem('catchedPokes') || '[]');
-                        const newTemotiPokes = storedPokes.filter((p) => randomPoke.id !== p.id);
-                        localStorage.setItem('catchedPokes', JSON.stringify(newTemotiPokes));
-                        window.location.href = '/temoti-pokes';
+                        if (typeof localStorage !== 'undefined') {
+                            const storedPokes = JSON.parse(localStorage.getItem('catchedPokes') || '[]');
+                            const newTemotiPokes = storedPokes.filter((p) => randomPoke.id !== p.id);
+                            localStorage.setItem('catchedPokes', JSON.stringify(newTemotiPokes));
+                            window.location.href = '/temoti-pokes';
+                        }
                     }}
                 >
                     おくる
@@ -62,9 +78,17 @@ export default function ShowTemoti() {
             </div>
 
             {/* 戻るボタン */}
-            <div className="mt-4">
+            <div>
                 <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    style={{
+                        backgroundColor: '#0000ff',
+                        // hover
+                        ':hover': {
+                            backgroundColor: '#0000ff',
+                            opacity: '0.8',
+                        },
+
+                    }}
                     onClick={() => {
                         window.history.back();
                     }}

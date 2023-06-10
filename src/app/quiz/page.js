@@ -61,9 +61,11 @@ export default function GetRandomPoke() {
     const handleAnswer = (selectedPokemon) => {
         if (selectedPokemon.id === randomPoke.id) {
             alert("せいかい！");
-            const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
-            catchedPokes.push(randomPoke);
-            localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
+            if (typeof localStorage !== 'undefined') {
+                const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
+                catchedPokes.push(randomPoke);
+                localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
+            }
         } else {
             alert("おしい！");
         }
