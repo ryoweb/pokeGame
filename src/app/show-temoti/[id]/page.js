@@ -46,6 +46,21 @@ export default function ShowTemoti() {
                 src={randomPoke?.sprites.other['official-artwork'].front_default}
             />
 
+            {/* このポケモンを削除する */}
+            <div className="mt-4">
+                <button
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={() => {
+                        const storedPokes = JSON.parse(localStorage.getItem('catchedPokes') || '[]');
+                        const newTemotiPokes = storedPokes.filter((p) => randomPoke.id !== p.id);
+                        localStorage.setItem('catchedPokes', JSON.stringify(newTemotiPokes));
+                        window.location.href = '/temoti-pokes';
+                    }}
+                >
+                    おくる
+                </button>
+            </div>
+
             {/* 戻るボタン */}
             <div className="mt-4">
                 <button

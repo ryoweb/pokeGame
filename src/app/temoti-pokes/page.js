@@ -37,15 +37,9 @@ export default function TemotiPokes() {
                     戻る
                 </button>
             </div>
-
         </>
     );
 }
-
-
-
-// 予備のコンポーネント
-
 {/* にがす */ }
 // <div>
 //     <button
@@ -58,6 +52,3 @@ export default function TemotiPokes() {
 //         にがす
 //     </button>
 // </div>
-
-{/* つかまえにいく */ }
-{/* <a href="/get-random-poke">つかまえにいく</a> */ }

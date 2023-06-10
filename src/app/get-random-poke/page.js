@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
+import MonsterBall from "../../components/monsterball";
 
 export default function GetRandomPoke() {
   const [randomPoke, setRandomPoke] = useState(null);
@@ -48,46 +49,53 @@ export default function GetRandomPoke() {
     // デフォルト捕獲率を70%に設定
     let captureRate = 0.7;
 
-    // statusが500を超えると捕獲率を30%にする
+    // statusが500を超えると捕獲率を40%にする
     if (randomPoke.power > 500) {
-      captureRate = 0.3;
+      captureRate = 0.4;
     }
 
-    // statusが600を超えると捕獲率を15%にする
+    // statusが600を超えると捕獲率を30%にする
     if (randomPoke.power > 600) {
-      captureRate = 0.15;
+      captureRate = 0.3;
     }
 
     if (random < captureRate) {
       catchedPokes.push(randomPoke);
       localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
-      alert("つかまえた！〇");
+      // alert("つかまえた！〇")
+      setTimeout(() => {
+        alert("つかまえた！〇");
+      }, 3000);
+      //nullに
+      setRandomPoke(null);
     } else {
-      alert("にげられた！×");
+      // alert("にげられた！×");
+      setTimeout(() => {
+        alert("にげられた！×");
+      }, 3000);
+      setRandomPoke(null);
     }
     setIsLoading(true);
-    fetchRandomPokemon();
+    // fetchRandomPokemon();
   };
 
   return (
     <>
       {/* 背景をpublic/stage_kusaにする */}
-      <div className="bg-cover bg-center bg-no-repeat w-screen h-screen" style={{ backgroundImage: "url(/stage_kusa.jpeg)", backgroundRepeat: "no-repeat" }}>
-        <div className="flex justify-center">
-          <div className="w-32 h-32">
-            <img
-              className="w-full h-full"
-              src={randomPoke?.realsprites}
-              onLoad={() => setIsLoading(false)} // 画像がロードされたらisLoadingをfalseに設定
-            />
-          </div>
-        </div>
+      <div style={{ backgroundImage: "url(/stage_kusa.jpeg)", backgroundRepeat: "no-repeat" }}>
+        {randomPoke ? (
+          <img
+            src={randomPoke?.realsprites}
+            onLoad={() => setIsLoading(false)} // 画像がロードされたらisLoadingをfalseに設定
+          />
+        ) : (
+          <MonsterBall />
+        )}
       </div>
 
-      <div className="flex justify-center">
+      <div>
         {/* catch */}
         <button
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg"
           onClick={handleCatch}
           style={{ fontSize: "40px" }}
           disabled={isLoading || !randomPoke} // isLoadingがtrueまたはrandomPokeがnullの場合はクリックを無効化
@@ -97,7 +105,6 @@ export default function GetRandomPoke() {
 
         {/* 別のポケモンを探す */}
         <button
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg"
           onClick={fetchRandomPokemon}
           style={{ fontSize: "40px" }}
         >
@@ -106,7 +113,6 @@ export default function GetRandomPoke() {
 
         {/* temoti */}
         <button
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg"
           onClick={() => {
             location.href = "/temoti-pokes";
           }}
