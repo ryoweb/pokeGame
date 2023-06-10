@@ -5,29 +5,60 @@ export default function GetRandomPoke() {
   const [randomPoke, setRandomPoke] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // ポケモンをランダムに取得する
   useEffect(() => {
     fetchRandomPokemon();
   }, []);
-
   const fetchRandomPokemon = () => {
     setIsLoading(true);
-    fetch("https://pokeapi.co/api/v2/pokemon?limit=1118")
+
+    const randomId = Math.floor(Math.random() * 1010) + 1;
+
+    fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`)
       .then((res) => res.json())
       .then((data) => {
-        const random = Math.floor(Math.random() * data.results.length);
-        fetch(data.results[random].url)
-          .then((res) => res.json())
-          .then((data) => {
-            setRandomPoke(data);
-            setIsLoading(false);
-          });
+        console.log(data);
+        // 保存するデータを絞る
+        const simplifiedPokemon = {
+          //図鑑番号
+          id: data.id,
+          //綺麗な画像
+          realsprites: data.sprites.other["official-artwork"].front_default,
+          //ゲーム内での画像
+          sprites: data.sprites["front_default"],
+          // バトル用の後ろ姿
+          backsprites: data.sprites["back_default"],
+          // 全ての種族値を足したもの
+          power: data.stats.reduce((acc, stat) => acc + stat.base_stat, 0),
+        };
+        setRandomPoke(simplifiedPokemon);
+        setIsLoading(false);
       });
   };
 
+  // ポケモンを捕獲する
   const handleCatch = () => {
+    if (isLoading || !randomPoke) {
+      // 画像がまだロードされていない場合やローディング中の場合はクリックを無効化
+      return;
+    }
+
     const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
     const random = Math.random();
-    if (random < 0.7) {
+    // デフォルト捕獲率を70%に設定
+    let captureRate = 0.7;
+
+    // statusが500を超えると捕獲率を30%にする
+    if (randomPoke.power > 500) {
+      captureRate = 0.3;
+    }
+
+    // statusが600を超えると捕獲率を15%にする
+    if (randomPoke.power > 600) {
+      captureRate = 0.15;
+    }
+
+    if (random < captureRate) {
       catchedPokes.push(randomPoke);
       localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
       alert("つかまえた！〇");
@@ -40,25 +71,26 @@ export default function GetRandomPoke() {
 
   return (
     <>
-      <div className="flex justify-center">
-        {isLoading ? (
-          <div className="w-32 h-32 border-t-2 border-b-2 border-gray-900 rounded-full animate-spin"></div>
-        ) : (
+      {/* 背景をpublic/stage_kusaにする */}
+      <div className="bg-cover bg-center bg-no-repeat w-screen h-screen" style={{ backgroundImage: "url(/stage_kusa.jpeg)", backgroundRepeat: "no-repeat" }}>
+        <div className="flex justify-center">
           <div className="w-32 h-32">
             <img
               className="w-full h-full"
-              src={randomPoke?.sprites.other["official-artwork"].front_default}
+              src={randomPoke?.realsprites}
+              onLoad={() => setIsLoading(false)} // 画像がロードされたらisLoadingをfalseに設定
             />
           </div>
-        )}
+        </div>
       </div>
 
       <div className="flex justify-center">
-        {/* catche */}
+        {/* catch */}
         <button
           className="bg-gray-900 text-white px-4 py-2 rounded-lg"
           onClick={handleCatch}
           style={{ fontSize: "40px" }}
+          disabled={isLoading || !randomPoke} // isLoadingがtrueまたはrandomPokeがnullの場合はクリックを無効化
         >
           つかまえる
         </button>
@@ -69,9 +101,8 @@ export default function GetRandomPoke() {
           onClick={fetchRandomPokemon}
           style={{ fontSize: "40px" }}
         >
-          別のポケモンを探す
+          さがす
         </button>
-
 
         {/* temoti */}
         <button
