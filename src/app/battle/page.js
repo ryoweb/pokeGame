@@ -151,13 +151,14 @@ export default function Battle() {
             )
             }
             <div>
+
                 <div style={{
                     display: "flex",
                     flexWrap: "wrap",
                     alignItems: "center",
                     justifyContent: "center",
                 }}>
-                    {JSON.parse(localStorage.getItem("catchedPokes") || "[]").map((poke, index) => (
+                    {typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem("catchedPokes") || "[]").map((poke, index) => (
                         <img
                             key={index}
                             src={poke.sprites}
@@ -167,13 +168,13 @@ export default function Battle() {
                                 // 選択された時のborder
                                 border: myPoke?.id === poke.id ? "2px solid red" : "2px solid #ddd",
                                 borderRadius: "10%",
-
                             }}
                             onClick={() => setMyPoke(poke)}
                             value={JSON.stringify(poke)}
                         />
                     ))}
                 </div>
+
             </div>
         </>
     );

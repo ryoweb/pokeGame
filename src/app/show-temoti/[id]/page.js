@@ -58,11 +58,6 @@ export default function ShowTemoti() {
                         fontWeight: 'bold',
                         padding: '8px 16px',
                         borderRadius: '4px',
-                        ':hover': {
-                            backgroundColor: '#ff0000',
-                            opacity: '0.8',
-                        },
-
                     }}
                     onClick={() => {
                         if (typeof localStorage !== 'undefined') {
@@ -82,12 +77,6 @@ export default function ShowTemoti() {
                 <button
                     style={{
                         backgroundColor: '#0000ff',
-                        // hover
-                        ':hover': {
-                            backgroundColor: '#0000ff',
-                            opacity: '0.8',
-                        },
-
                     }}
                     onClick={() => {
                         window.history.back();

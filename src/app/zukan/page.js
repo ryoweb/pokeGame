@@ -7,7 +7,6 @@ export default function Zukan() {
 
     useEffect(() => {
         if (typeof localStorage !== 'undefined') {
-
             const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
             setPokedex(catchedPokes);
         }

@@ -46,7 +46,9 @@ export default function GetRandomPoke() {
         return;
       }
 
-      const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
+      if (typeof localStorage !== 'undefined') {
+        const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
+      }
       const random = Math.random();
       // デフォルト捕獲率を70%に設定
       let captureRate = 0.7;
@@ -63,7 +65,9 @@ export default function GetRandomPoke() {
 
       if (random < captureRate) {
         catchedPokes.push(randomPoke);
-        localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
+        }
         // alert("つかまえた！〇")
         setTimeout(() => {
           alert("つかまえた！〇");
