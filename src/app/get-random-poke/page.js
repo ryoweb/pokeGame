@@ -6,7 +6,7 @@ export default function GetRandomPoke() {
   const [randomPoke, setRandomPoke] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // ポケモンをランダムに取得する
+  // pokeAPIからポケモンをランダムに取得する
   useEffect(() => {
     fetchRandomPokemon();
   }, []);
@@ -36,60 +36,59 @@ export default function GetRandomPoke() {
         setIsLoading(false);
       });
   };
-
   // ポケモンを捕獲する
   const handleCatch = () => {
+    let catchedPokes = [];
     if (typeof localStorage !== 'undefined') {
-
-      if (isLoading || !randomPoke) {
-        // 画像がまだロードされていない場合やローディング中の場合はクリックを無効化
-        return;
-      }
-
-      if (typeof localStorage !== 'undefined') {
-        const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
-      }
-      const random = Math.random();
-      // デフォルト捕獲率を70%に設定
-      let captureRate = 0.7;
-
-      // statusが500を超えると捕獲率を40%にする
-      if (randomPoke.power > 500) {
-        captureRate = 0.4;
-      }
-
-      // statusが600を超えると捕獲率を30%にする
-      if (randomPoke.power > 600) {
-        captureRate = 0.3;
-      }
-
-      if (random < captureRate) {
-        catchedPokes.push(randomPoke);
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
-        }
-        // alert("つかまえた！〇")
-        setTimeout(() => {
-          alert("つかまえた！〇");
-        }, 3000);
-        //nullに
-        setRandomPoke(null);
-      } else {
-        // alert("にげられた！×");
-        setTimeout(() => {
-          alert("にげられた！×");
-        }, 3000);
-        setRandomPoke(null);
-      }
-      setIsLoading(true);
-      // fetchRandomPokemon();
+      catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
     }
+
+    // 画像がまだロードされていない場合やローディング中の場合はクリックを無効化
+    if (isLoading || !randomPoke) {
+      return;
+    }
+
+    const random = Math.random();
+    // デフォルト捕獲率を70%に設定
+    let captureRate = 0.7;
+
+    // statusが500を超えると捕獲率を40%にする
+    if (randomPoke.power > 500) {
+      captureRate = 0.4;
+    }
+
+    // statusが600を超えると捕獲率を30%にする
+    if (randomPoke.power > 600) {
+      captureRate = 0.3;
+    }
+
+    if (random < captureRate) {
+      catchedPokes.push(randomPoke);
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
+      }
+      // alert("つかまえた！〇")
+      setTimeout(() => {
+        alert("つかまえた！〇");
+      }, 3000);
+      //nullに
+      setRandomPoke(null);
+    } else {
+      // alert("にげられた！×");
+      setTimeout(() => {
+        alert("にげられた！×");
+      }, 3000);
+      setRandomPoke(null);
+    }
+    setIsLoading(true);
+    // fetchRandomPokemon();
   };
 
   return (
     <>
       {/* 背景をpublic/stage_kusaにする */}
-      <div style={{ backgroundImage: "url(/stage_kusa.jpeg)", backgroundRepeat: "no-repeat" }}>
+      <div style={{ backgroundImage: "url(/stage_kusa.jpeg)", backgroundRepeat: "no-repeat", backgroundSize: "cover", height: "100vh", width: "100%" }} className="flex flex-col items-center justify-center">
+
         {randomPoke ? (
           <img
             src={randomPoke?.realsprites}
@@ -98,35 +97,23 @@ export default function GetRandomPoke() {
         ) : (
           <MonsterBall />
         )}
-      </div>
 
-      <div>
-        {/* catch */}
-        <button
-          onClick={handleCatch}
-          style={{ fontSize: "40px" }}
-          disabled={isLoading || !randomPoke} // isLoadingがtrueまたはrandomPokeがnullの場合はクリックを無効化
-        >
-          つかまえる
-        </button>
+        <div className="space-y-4">
+          <button
+            onClick={handleCatch}
+            className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-2xl"
+            disabled={isLoading || !randomPoke} // isLoadingがtrueまたはrandomPokeがnullの場合はクリックを無効化
+          >
+            つかまえる
+          </button>
 
-        {/* 別のポケモンを探す */}
-        <button
-          onClick={fetchRandomPokemon}
-          style={{ fontSize: "40px" }}
-        >
-          さがす
-        </button>
-
-        {/* temoti */}
-        <button
-          onClick={() => {
-            location.href = "/temoti-pokes";
-          }}
-          style={{ fontSize: "40px" }}
-        >
-          てもちのポケモン
-        </button>
+          <button
+            onClick={fetchRandomPokemon}
+            className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700 text-2xl"
+          >
+            さがす
+          </button>
+        </div>
       </div>
     </>
   );

@@ -70,112 +70,68 @@ export default function Battle() {
             }
         }
     };
-
     return (
         <>
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
                 <>
-                    <div style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        // 背景画像を設定
-                        background: "url(/battle.jpeg)",
-                        backgroundSize: "100% auto",
-                        backgroundRepeat: "no-repeat",
-                        height: "100vh",
-                        width: "100vw",
-                        position: "relative",
-                    }}>
-                        {/* 選出された相手ポケモンを表示 */}
+                    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", background: "url(/battle.jpg)", backgroundSize: "100% 100%", backgroundRepeat: "no-repeat", height: "100vh", width: "100vw", position: "relative" }}>
+                        {/* 相手ポケモンを表示 */}
                         <img src={randomPoke?.sprites}
                             style={{
                                 height: "40%",
-                                // heightと相対的にwidthを設定
                                 width: "auto",
                                 position: "absolute",
-                                top: "40%",
-                                right: "28%",
+                                top: "20%",
+                                right: "25%",
                                 transform: "translate(50%, -50%)"
                             }} />
-                        {/* <p
-                            style={{
-                                marginLeft: "40%",
-                                fontSize: "3rem",
-                            }}>強さ：{randomPoke?.power}</p> */}
-
                         <div>
-                            {/* 選択されたポケモンを表示 */}
+                            {/* 選択された自身のポケモンを表示 */}
                             {myPoke && (
                                 <div style={{ marginTop: "20px" }}>
                                     <img
                                         src={myPoke.backsprites || myPoke.sprites}
                                         alt="myPoke-back"
-                                        style={{
-                                            height: "40%",
-                                            // heightと相対的にwidthを設定
-                                            width: "auto",
-                                            position: "absolute",
-                                            top: "70%",
-                                            left: "5%",
-                                            transform: "translate(50%, -50%)"
-                                        }}
+                                        style={{ height: "40%", width: "auto", position: "absolute", top: "40%", left: "-5%", transform: "translate(50%, -50%)" }}
                                     />
                                 </div>
                             )}
                         </div>
-
+                        {/* バトル開始ボタン */}
                         <button onClick={handleBattle} disabled={!myPoke}
                             style={{
                                 fontSize: "2rem",
                                 color: "yellow",
                                 border: "2px solid yellow",
                                 borderRadius: "10%",
-                                // ふちを黒に
                                 background: "black",
-                                // 透明度を設定
                                 opacity: "0.5",
-                                // ホバー時の設定
                                 ":hover": {
                                     background: "yellow",
                                     color: "black",
                                     opacity: "1",
                                 }
-                            }}>バトル</button>
+                            }}>ばとる</button>
+                        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
+                            {typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem("catchedPokes") || "[]").map((poke, index) => (
+                                <img
+                                    key={index}
+                                    src={poke.sprites}
+                                    alt={poke.name}
+                                    style={{
+                                        width: "70px", height: "70px", objectFit: "cover", cursor: "pointer",
+                                        border: myPoke?.id === poke.id ? "2px solid red" : "2px solid #ddd",
+                                        borderRadius: "10%",
+                                    }}
+                                    onClick={() => setMyPoke(poke)}
+                                    value={JSON.stringify(poke)}
+                                />
+                            ))}
+                        </div>
                     </div>
-
-                </>
-            )
-            }
-            <div>
-
-                <div style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}>
-                    {typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem("catchedPokes") || "[]").map((poke, index) => (
-                        <img
-                            key={index}
-                            src={poke.sprites}
-                            alt={poke.name}
-                            style={{
-                                width: "70px", height: "70px", objectFit: "cover", cursor: "pointer",
-                                // 選択された時のborder
-                                border: myPoke?.id === poke.id ? "2px solid red" : "2px solid #ddd",
-                                borderRadius: "10%",
-                            }}
-                            onClick={() => setMyPoke(poke)}
-                            value={JSON.stringify(poke)}
-                        />
-                    ))}
-                </div>
-
-            </div>
+                </>)}
         </>
     );
 }

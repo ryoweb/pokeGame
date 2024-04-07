@@ -1,6 +1,5 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 
 export default function Zukan() {
     const [pokedex, setPokedex] = useState([]);
@@ -75,10 +74,8 @@ export default function Zukan() {
     };
 
     return (
-        // <Link href={`/show-temoti/${id}`}>
         <div className="pokedex" style={{ display: "flex", flexWrap: "wrap" }}>
             {renderPokedex()}
         </div>
-        // </Link>
     );
 }

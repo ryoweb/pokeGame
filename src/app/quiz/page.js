@@ -1,11 +1,26 @@
 "use client";
 import { useEffect, useState } from "react";
 import MonsterBall from "../../components/monsterball";
+import GetItemModal from "../../components/getItemModal";
+import LoseModal from "../../components/zannenModal";
 
 export default function GetRandomPoke() {
     const [randomPoke, setRandomPoke] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [quizChoices, setQuizChoices] = useState([]);
+    //useStateでアイテム取得モーダルの開閉を管理
+    const [isGetItemModalOpen, setIsGetItemModalOpen] = useState(false);
+    //ざんねんモーダルの開閉を管理
+    const [isLoseModalOpen, setIsLoseModalOpen] = useState(false);
+
+    //モーダルを閉じる関数
+    const handleCloseGetItemModal = () => {
+        setIsGetItemModalOpen(false);
+    }
+    //ざんねんモーダルを閉じる関数
+    const handleCloseLoseModal = () => {
+        setIsLoseModalOpen(false);
+    }
 
     useEffect(() => {
         fetchRandomPokemon();
@@ -60,21 +75,20 @@ export default function GetRandomPoke() {
 
     const handleAnswer = (selectedPokemon) => {
         if (selectedPokemon.id === randomPoke.id) {
-            alert("せいかい！");
-            if (typeof localStorage !== 'undefined') {
-                const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
-                catchedPokes.push(randomPoke);
-                localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
-            }
+            setIsGetItemModalOpen(true);
         } else {
-            alert("おしい！");
+            setIsLoseModalOpen(true);
         }
-
         fetchRandomPokemon();
     };
 
     return (
         <>
+            {/* 正解時　アイテム取得モーダル */}
+            {isGetItemModalOpen && <GetItemModal onClose={handleCloseGetItemModal} />}
+            {/* 失敗時　ざんねんモーダル */}
+            {isLoseModalOpen && <LoseModal onClose={handleCloseLoseModal} />}
+
             {isLoading ? (
                 <>
                     クイズのじゅんびちゅう...
