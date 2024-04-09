@@ -1,16 +1,11 @@
-'use client'  
+'use client'
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { BALL_IMAGE_PATH } from '@/constants';
 
 export default function ItemFooter(props) {
     //useStateで所持数を管理
-    const [monsterBall, setMonsterBall] = useState(0);
-    const [superBall, setSuperBall] = useState(0);
-    const [hyperBall, setHyperBall] = useState(0);
-    const [masterBall, setMasterBall] = useState(0);
-    const monsterBallImage = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png';
-    const superBallImage = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/great-ball.png';
-    const hyperBallImage = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/ultra-ball.png';
-    const masterBallImage = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png';
+    const [items, setItems] = useState({ monsterBall: 0, superBall: 0, hyperBall: 0, masterBall: 0 });
 
     //ローカルストレージから所持数を取得
     useEffect(() => {
@@ -20,29 +15,18 @@ export default function ItemFooter(props) {
                 items = { monsterBall: 0, superBall: 0, hyperBall: 0, masterBall: 0 };
                 localStorage.setItem("items", JSON.stringify(items));
             }
-            setMonsterBall(items.monsterBall);
-            setSuperBall(items.superBall);
-            setHyperBall(items.hyperBall);
-            setMasterBall(items.masterBall);
+            setItems(items);
         }
     }, []);
 
     return (
         <div>
-            <h2>所持数</h2>
-            <div style={{ display: 'flex', justifyContent: 'space-center', alignItems: 'center' }}>
-                <span>
-                    {monsterBallImage && <img src={monsterBallImage} alt="Monster Ball" />}: {monsterBall}
-                </span>
-                <span>
-                    {superBallImage && <img src={superBallImage} alt="Super Ball" />}: {superBall}
-                </span>
-                <span>
-                    {hyperBallImage && <img src={hyperBallImage} alt="Hyper Ball" />}: {hyperBall}
-                </span>
-                <span>
-                    {masterBallImage && <img src={masterBallImage} alt="Master Ball" />}: {masterBall}
-                </span>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-center', alignItems: 'center' }}>
+                {Object.keys(items).map((item) => (
+                    <span key={item}>
+                        <Image src={BALL_IMAGE_PATH[item]} alt={`${item} image`} width={50} height={50} />　x {items[item]}
+                    </span>
+                ))}
             </div>
         </div>
     );

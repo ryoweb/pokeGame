@@ -1,21 +1,19 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { BALL_IMAGE_PATH, ITEM_BALL_GET_RATE } from '../../constants';
 
 export default function GetItemModal(props) {
     //useStateでモーダルの開閉を管理
     const [isOpen, setIsOpen] = useState(false);
     //useStateで今回取得したアイテムを管理
     const [gotItem, setGotItem] = useState(null);
-    //useStateで所持数を管理
-    const [monsterBall, setMonsterBall] = useState(getInitialBallCount('monsterBall'));
-    const [superBall, setSuperBall] = useState(getInitialBallCount('superBall'));
-    const [hyperBall, setHyperBall] = useState(getInitialBallCount('hyperBall'));
-    const [masterBall, setMasterBall] = useState(getInitialBallCount('masterBall'));
-    //アイテムの画像
-    const monsterBallImage = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png';
-    const superBallImage = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/great-ball.png';
-    const hyperBallImage = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/ultra-ball.png';
-    const masterBallImage = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png';
+    //所持数を管理
+    const [items, setItems] = useState({
+        monsterBall: getInitialBallCount('monsterBall'),
+        superBall: getInitialBallCount('superBall'),
+        hyperBall: getInitialBallCount('hyperBall'),
+        masterBall: getInitialBallCount('masterBall'),
+      });
     //所持数の初期値を取得する関数
     function getInitialBallCount(ballName) {
         if (typeof localStorage !== 'undefined') {
@@ -46,56 +44,32 @@ export default function GetItemModal(props) {
         getItem();
     }, [props.isOpen]);
 
-    //ローカルストレージから所持数を取得
+    //ローカルストレージからアイテムを取得
     useEffect(() => {
         if (typeof localStorage !== 'undefined') {
-            let items = JSON.parse(localStorage.getItem("items"));
-            if (!items) {
-                items = { monsterBall: 0, superBall: 0, hyperBall: 0, masterBall: 0 };
-                localStorage.setItem("items", JSON.stringify(items));
-            }
-            setMonsterBall(items.monsterBall);
-            setSuperBall(items.superBall);
-            setHyperBall(items.hyperBall);
-            setMasterBall(items.masterBall);
+          let items = JSON.parse(localStorage.getItem("items"));
+          if (!items) {
+            items = { monsterBall: 0, superBall: 0, hyperBall: 0, masterBall: 0 };
+            localStorage.setItem("items", JSON.stringify(items));
+          }
+          setItems(items);
         }
-    }, []);
+      }, []);
 
     //アイテムを取得する関数
     const getItem = () => {
         const random = Math.random();
-        if (random < 0.6) {
-            setMonsterBall(prevMonsterBall => {
-                const newMonsterBall = prevMonsterBall + 1;
-                const items = JSON.parse(localStorage.getItem("items"));
-                items.monsterBall = newMonsterBall;
-                localStorage.setItem("items", JSON.stringify(items));
-                return newMonsterBall;
-            });
-            setGotItem({ image: monsterBallImage, name: 'Monster Ball' });
-        } else if (random < 0.9) {
-            setSuperBall(prevSuperBall => {
-                const newSuperBall = prevSuperBall + 1;
-                localStorage.setItem("items", JSON.stringify({ ...JSON.parse(localStorage.getItem("items")), superBall: newSuperBall }));
-                return newSuperBall;
-            });
-            setGotItem({ image: superBallImage, name: 'Super Ball' });
-        } else if (random < 0.99) {
-            setHyperBall(prevHyperBall => {
-                const newHyperBall = prevHyperBall + 1;
-                localStorage.setItem("items", JSON.stringify({ ...JSON.parse(localStorage.getItem("items")), hyperBall: newHyperBall }));
-                return newHyperBall;
-            });
-            setGotItem({ image: hyperBallImage, name: 'Hyper Ball' });
-        } else {
-            setMasterBall(prevMasterBall => {
-                const newMasterBall = prevMasterBall + 1;
-                localStorage.setItem("items", JSON.stringify({ ...JSON.parse(localStorage.getItem("items")), masterBall: newMasterBall }));
-                return newMasterBall;
-            });
-            setGotItem({ image: masterBallImage, name: 'Master Ball' });
-        }
-    }
+        const ballName = Object.keys(ITEM_BALL_GET_RATE).find((ball) => random < ITEM_BALL_GET_RATE[ball]);
+
+        setItems((prevItems) => {
+            const newItems = { ...prevItems };
+            newItems[ballName]++;
+            localStorage.setItem("items", JSON.stringify(newItems));
+            return newItems;
+        });
+
+        setGotItem({ image: BALL_IMAGE_PATH[ballName], name: ballName });
+    };
     return (
         <div
             className={`modal ${isOpen ? 'open' : ''}`}
@@ -105,9 +79,9 @@ export default function GetItemModal(props) {
             <div
                 className="modal-content"
                 onClick={stopPropagation}
-                style={{backgroundColor: 'white', padding: '20px', borderRadius: '10px'}}
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', padding: '20px', borderRadius: '10px', border: '2px solid black' }}
             >
-                <h2>げっと！！</h2>
+                <h2 style={{ textAlign: 'center' }}>げっと！！</h2>
                 {gotItem && <img src={gotItem.image} alt={gotItem.name} />}
             </div>
         </div>

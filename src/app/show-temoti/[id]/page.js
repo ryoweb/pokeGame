@@ -5,6 +5,8 @@ export default function ShowTemoti() {
     const [randomPoke, setRandomPoke] = useState(null);
     const [pokeId, setPokeId] = useState(null);
     const [japaneseName, setJapaneseName] = useState(null);
+    const [japaneseFlavorText, setJapaneseFlavorText] = useState(null);
+    const [genera, setGenera] = useState(null);
 
     useEffect(() => {
         const path = window.location.pathname;
@@ -17,48 +19,102 @@ export default function ShowTemoti() {
             fetch(`https://pokeapi.co/api/v2/pokemon/${pokeId}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
+                    // console.log(data);
                     setRandomPoke(data);
                 });
 
-            // 日本語名を取得する
             fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokeId}`)
                 .then((res) => res.json())
                 .then((speciesData) => {
+                    console.log(speciesData);
+                    // 日本語名を取得する
                     const japaneseNameData = speciesData.names.find(name => name.language.name === 'ja');
                     if (japaneseNameData) {
                         setJapaneseName(japaneseNameData.name);
+                    }
+                    // 日本語の解説を取得する
+                    const japaneseFlavorTextData = speciesData.flavor_text_entries.find(entry => entry.language.name === 'ja');
+                    if (japaneseFlavorTextData) {
+                        setJapaneseFlavorText(japaneseFlavorTextData.flavor_text);
+                    }
+                    //genera(分類)を取得する
+                    const genera = speciesData.genera.find(genera => genera.language.name === 'ja');
+                    if (genera) {
+                        setGenera(genera.genus);
                     }
                 });
         }
     }, [pokeId]);
 
     return (
-        <div
-            style={{
-                marginLeft: 'auto',
-                marginRight: 'auto',
-            }}
-        >
-            {japaneseName && <div>{japaneseName}</div>}
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
+            {/* 名前 */}
+            {japaneseName && <div className='poke-name'>{japaneseName}</div>}
+            {/* 分類 */}
+            <div className="poke-genera">
+                <p>{genera}</p>
+            </div>
+            {/* 画像 */}
             <img
-                style={{
-                    width: '200px',
-                    height: '200px',
-                }}
+                style={{ width: '200px', height: '200px', }}
                 src={randomPoke?.sprites.other['official-artwork'].front_default}
             />
 
-            {/* このポケモンを削除する */}
+            {/* 解説 */}
+            <div className="poke-info">
+                <p>{japaneseFlavorText}</p>
+            </div>
+
+
+            <div className='play-button'>
+                <button
+                    onClick={() => {
+                        const pokeName = document.querySelector('.poke-name').textContent;
+                        const pokeGenera = document.querySelector('.poke-genera').textContent;
+                        const pokeInfo = document.querySelector('.poke-info').textContent;
+
+                        const utterance1 = new SpeechSynthesisUtterance(pokeName);
+                        window.speechSynthesis.speak(utterance1);
+
+                        setTimeout(() => {
+                            const utterance2 = new SpeechSynthesisUtterance(pokeGenera);
+                            window.speechSynthesis.speak(utterance2);
+                        }, 1200); // 1.2秒待機
+
+                        setTimeout(() => {
+                            const utterance3 = new SpeechSynthesisUtterance(pokeInfo);
+                            window.speechSynthesis.speak(utterance3);
+                        }, 2400); // 2.4秒待機
+                    }}
+                    style={{
+                        border: '1px solid black',
+                        borderRadius: '5px',
+                        margin: '10px',
+                    }}
+                >
+                    せつめい
+                </button>
+            </div>
+
+            {/* 戻るボタン */}
             <div>
                 <button
-                    style={{
-                        backgroundColor: '#ff0000',
-                        color: '#ffffff',
-                        fontWeight: 'bold',
-                        padding: '8px 16px',
-                        borderRadius: '4px',
+                    onClick={() => {
+                        window.history.back();
                     }}
+                    style={{
+                        border: '1px solid black',
+                        borderRadius: '5px',
+                        margin: '10px',
+                    }}
+                >
+                    もどる
+                </button>
+            </div>
+
+                        {/* このポケモンを削除する */}
+                        <div>
+                <button
                     onClick={() => {
                         if (typeof localStorage !== 'undefined') {
                             const storedPokes = JSON.parse(localStorage.getItem('catchedPokes') || '[]');
@@ -67,24 +123,16 @@ export default function ShowTemoti() {
                             window.location.href = '/temoti-pokes';
                         }
                     }}
+                    style={{
+                        border: '1px solid black',
+                        borderRadius: '5px',
+                        margin: '10px',
+                    }}
                 >
-                    おくる
+                    はかせにおくる
                 </button>
             </div>
 
-            {/* 戻るボタン */}
-            <div>
-                <button
-                    style={{
-                        backgroundColor: '#0000ff',
-                    }}
-                    onClick={() => {
-                        window.history.back();
-                    }}
-                >
-                    戻る
-                </button>
-            </div>
         </div>
     );
 }

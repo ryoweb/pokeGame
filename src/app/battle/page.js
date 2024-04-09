@@ -1,10 +1,28 @@
 "use client"
 import React, { useState, useEffect } from "react";
+import GetItemModal from "../../components/getItemModal";
+import LoseModal from "../../components/zannenModal";
 
 export default function Battle() {
     const [randomPoke, setRandomPoke] = useState(null);
     const [myPoke, setMyPoke] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+
+    //アイテムゲット用モーダル
+    //useStateでアイテム取得モーダルの開閉を管理
+    const [isGetItemModalOpen, setIsGetItemModalOpen] = useState(false);
+    //ざんねんモーダルの開閉を管理
+    const [isLoseModalOpen, setIsLoseModalOpen] = useState(false);
+
+    //モーダルを閉じる関数
+    const handleCloseGetItemModal = () => {
+        setIsGetItemModalOpen(false);
+    }
+    //ざんねんモーダルを閉じる関数
+    const handleCloseLoseModal = () => {
+        setIsLoseModalOpen(false);
+    }
+
 
     useEffect(() => {
         fetchRandomPokemon();
@@ -50,19 +68,22 @@ export default function Battle() {
                     const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
                     catchedPokes.push(randomPoke);
                     localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
-                    alert("かった！かつとポケモンはゲットできるよ！");
+                    // alert("かった！かつとポケモンはゲットできるよ！");
+                    setIsGetItemModalOpen(true);
 
                     setRandomPoke(null);
                     setMyPoke(null);
                     fetchRandomPokemon();
 
                 } else if (myPower < randomPower) {
-                    alert("まけた！ざんねん！");
+                    // alert("まけた！ざんねん！");
+                    setIsLoseModalOpen(true);
                     setRandomPoke(null);
                     setMyPoke(null);
                     fetchRandomPokemon();
                 } else {
-                    alert("あいこ");
+                    // alert("あいこ");
+                    setIsLoseModalOpen(true);
                     setRandomPoke(null);
                     setMyPoke(null);
                     fetchRandomPokemon();
@@ -76,9 +97,13 @@ export default function Battle() {
                 <p>Loading...</p>
             ) : (
                 <>
+                    {/* 正解時　アイテム取得モーダル */}
+                    {isGetItemModalOpen && <GetItemModal onClose={handleCloseGetItemModal} />}
+                    {/* 失敗時　ざんねんモーダル */}
+                    {isLoseModalOpen && <LoseModal onClose={handleCloseLoseModal} />}
                     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", background: "url(/battle.jpg)", backgroundSize: "100% 100%", backgroundRepeat: "no-repeat", height: "100vh", width: "100vw", position: "relative" }}>
                         {/* 相手ポケモンを表示 */}
-                        <img src={randomPoke?.sprites}
+                        {randomPoke && <img src={randomPoke.sprites}
                             style={{
                                 height: "40%",
                                 width: "auto",
@@ -86,7 +111,7 @@ export default function Battle() {
                                 top: "20%",
                                 right: "25%",
                                 transform: "translate(50%, -50%)"
-                            }} />
+                            }} />}
                         <div>
                             {/* 選択された自身のポケモンを表示 */}
                             {myPoke && (
