@@ -29,7 +29,7 @@ useEffect(() => {
   useEffect(() => {
     fetchRandomPokemon();
   }, []);
-  // ランダムなポケモンを取得する関数
+  // ランダムなポケモンを取得
   const fetchRandomPokemon = () => {
     setIsLoading(true);
     const randomId = Math.floor(Math.random() * 1010) + 1;
@@ -48,7 +48,7 @@ useEffect(() => {
       });
   };
 
-  // ポケモンを捕獲する関数
+  // ポケモン捕獲
   const handleCatch = () => {
     let catchedPokes = [];
     if (isLoading || !randomPoke || !selectedItem) {
@@ -171,7 +171,6 @@ useEffect(() => {
         <button
           onClick={fetchRandomPokemon}
           className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-2xl"
-          disabled={isLoading || !randomPoke}
         >
           さがす
         </button>
