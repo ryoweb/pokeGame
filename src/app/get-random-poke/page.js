@@ -14,13 +14,17 @@ export default function GetRandomPoke() {
   // 手持ちのアイテムを保持するstate
   const [items, setItems] = useState({});
 
-  // localStorageから手持ちのアイテム情報を取得
-  useEffect(() => {
-    if (typeof localStorage !== "undefined") {
-      const items = JSON.parse(localStorage.getItem("items") || "{}");
-      setItems(items);
+// localStorageから手持ちのアイテム情報を取得
+useEffect(() => {
+  if (typeof localStorage !== "undefined") {
+    let items = JSON.parse(localStorage.getItem("items"));
+    if (!items) {
+      items = {"monsterBall":0,"superBall":0,"hyperBall":0,"masterBall":0};
+      localStorage.setItem("items", JSON.stringify(items));
     }
-  }, []);
+    setItems(items);
+  }
+}, []);
   
   useEffect(() => {
     fetchRandomPokemon();
@@ -155,7 +159,7 @@ export default function GetRandomPoke() {
         ))}
       </div>
       {/* 行動選択コンテナー */}
-      <div className="flex justify-center items-center mt-6" style={{ position: 'fixed', bottom: 0, width: '100%' }}>
+      <div className="flex justify-center items-center mt-6 space-x-4" style={{ position: 'fixed', bottom: 0, width: '100%' }}>
         <button
           onClick={handleCatch}
           className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-2xl"
@@ -166,7 +170,8 @@ export default function GetRandomPoke() {
 
         <button
           onClick={fetchRandomPokemon}
-          className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700 text-2xl"
+          className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-2xl"
+          disabled={isLoading || !randomPoke}
         >
           さがす
         </button>
