@@ -12,7 +12,7 @@ export default function LoseModal({ isOpen, onClose }) {
             <div
                 className="modal-content"
                 onClick={stopPropagation}
-                style={{backgroundColor: 'white', padding: '20px', borderRadius: '10px'}}
+                style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px' }}
             >
                 <h2>おしい！</h2>
             </div>

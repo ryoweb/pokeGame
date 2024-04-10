@@ -3,33 +3,33 @@
 'use client'
 import { useEffect, useState } from "react";
 
-export default function GetAllPokeStats () {
+export default function GetAllPokeStats() {
     const [allPokeStats, setAllPokeStats] = useState([]);
     useEffect(() => {
-      fetchAllPokeStats();
+        fetchAllPokeStats();
     }, []);
     const fetchAllPokeStats = () => {
-      fetch(`https://pokeapi.co/api/v2/pokemon?limit=898`)
-        .then((res) => res.json())
-        .then((data) => {
-          const promises = data.results.map((poke) => {
-            return fetch(poke.url).then((res) => res.json());
-          });
-          Promise.all(promises).then((pokemons) => {
-            const speciesPromises = pokemons.map(pokemon => {
-              return fetch(pokemon.species.url).then((res) => res.json());
+        fetch(`https://pokeapi.co/api/v2/pokemon?limit=898`)
+            .then((res) => res.json())
+            .then((data) => {
+                const promises = data.results.map((poke) => {
+                    return fetch(poke.url).then((res) => res.json());
+                });
+                Promise.all(promises).then((pokemons) => {
+                    const speciesPromises = pokemons.map(pokemon => {
+                        return fetch(pokemon.species.url).then((res) => res.json());
+                    });
+                    Promise.all(speciesPromises).then((speciesData) => {
+                        const sortedPokes = pokemons.map((pokemon, index) => {
+                            const japaneseName = speciesData[index].names.find(name => name.language.name === 'ja-Hrkt').name;
+                            return { ...pokemon, name: japaneseName };
+                        }).sort((a, b) => {
+                            return b.stats.reduce((acc, stat) => acc + stat.base_stat, 0) - a.stats.reduce((acc, stat) => acc + stat.base_stat, 0);
+                        });
+                        setAllPokeStats(sortedPokes);
+                    });
+                });
             });
-            Promise.all(speciesPromises).then((speciesData) => {
-              const sortedPokes = pokemons.map((pokemon, index) => {
-                const japaneseName = speciesData[index].names.find(name => name.language.name === 'ja-Hrkt').name;
-                return { ...pokemon, name: japaneseName };
-              }).sort((a, b) => {
-                return b.stats.reduce((acc, stat) => acc + stat.base_stat, 0) - a.stats.reduce((acc, stat) => acc + stat.base_stat, 0);
-              });
-              setAllPokeStats(sortedPokes);
-            });
-          });
-        });
 
     }
     return (

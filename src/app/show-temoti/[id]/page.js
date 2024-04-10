@@ -112,27 +112,29 @@ export default function ShowTemoti() {
                 </button>
             </div>
 
-                        {/* このポケモンを削除する */}
-                        <div>
-                <button
-                    onClick={() => {
-                        if (typeof localStorage !== 'undefined') {
-                            const storedPokes = JSON.parse(localStorage.getItem('catchedPokes') || '[]');
-                            const newTemotiPokes = storedPokes.filter((p) => randomPoke.id !== p.id);
-                            localStorage.setItem('catchedPokes', JSON.stringify(newTemotiPokes));
-                            window.location.href = '/temoti-pokes';
-                        }
-                    }}
-                    style={{
-                        border: '1px solid black',
-                        borderRadius: '5px',
-                        margin: '10px',
-                    }}
-                >
-                    はかせにおくる
-                </button>
-            </div>
-
+            {/* このポケモンを削除する */}
+            <div>
+    <button
+        onClick={() => {
+            if (typeof localStorage !== 'undefined') {
+                const storedPokes = JSON.parse(localStorage.getItem('catchedPokes') || '[]');
+                const index = storedPokes.findIndex((p) => randomPoke.id === p.id);
+                if (index !== -1) {
+                    storedPokes.splice(index, 1);
+                }
+                localStorage.setItem('catchedPokes', JSON.stringify(storedPokes));
+                window.location.href = '/temoti-pokes';
+            }
+        }}
+        style={{
+            border: '1px solid black',
+            borderRadius: '5px',
+            margin: '10px',
+        }}
+    >
+        はかせにおくる
+    </button>
+</div>
         </div>
     );
 }

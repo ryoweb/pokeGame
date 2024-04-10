@@ -13,7 +13,7 @@ export default function GetItemModal(props) {
         superBall: getInitialBallCount('superBall'),
         hyperBall: getInitialBallCount('hyperBall'),
         masterBall: getInitialBallCount('masterBall'),
-      });
+    });
     //所持数の初期値を取得する関数
     function getInitialBallCount(ballName) {
         if (typeof localStorage !== 'undefined') {
@@ -47,14 +47,14 @@ export default function GetItemModal(props) {
     //ローカルストレージからアイテムを取得
     useEffect(() => {
         if (typeof localStorage !== 'undefined') {
-          let items = JSON.parse(localStorage.getItem("items"));
-          if (!items) {
-            items = { monsterBall: 0, superBall: 0, hyperBall: 0, masterBall: 0 };
-            localStorage.setItem("items", JSON.stringify(items));
-          }
-          setItems(items);
+            let items = JSON.parse(localStorage.getItem("items"));
+            if (!items) {
+                items = { monsterBall: 0, superBall: 0, hyperBall: 0, masterBall: 0 };
+                localStorage.setItem("items", JSON.stringify(items));
+            }
+            setItems(items);
         }
-      }, []);
+    }, []);
 
     //アイテムを取得する関数
     const getItem = () => {

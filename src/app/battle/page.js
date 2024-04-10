@@ -1,17 +1,13 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import GetItemModal from "../../components/getItemModal";
-import LoseModal from "../../components/zannenModal";
+import GetItemModal from "../../components/get-item-modal";
+import LoseModal from "../../components/miss-modal";
 
 export default function Battle() {
     const [randomPoke, setRandomPoke] = useState(null);
     const [myPoke, setMyPoke] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-
-    //アイテムゲット用モーダル
-    //useStateでアイテム取得モーダルの開閉を管理
     const [isGetItemModalOpen, setIsGetItemModalOpen] = useState(false);
-    //ざんねんモーダルの開閉を管理
     const [isLoseModalOpen, setIsLoseModalOpen] = useState(false);
 
     //モーダルを閉じる関数
@@ -22,7 +18,6 @@ export default function Battle() {
     const handleCloseLoseModal = () => {
         setIsLoseModalOpen(false);
     }
-
 
     useEffect(() => {
         fetchRandomPokemon();
@@ -65,24 +60,18 @@ export default function Battle() {
             const randomPower = randomPoke.power;
             if (typeof localStorage !== 'undefined') {
                 if (myPower > randomPower) {
-                    const catchedPokes = JSON.parse(localStorage.getItem("catchedPokes") || "[]");
-                    catchedPokes.push(randomPoke);
-                    localStorage.setItem("catchedPokes", JSON.stringify(catchedPokes));
-                    // alert("かった！かつとポケモンはゲットできるよ！");
+                    //プレイヤ勝利時、プレイヤーにアイテムを付与する
                     setIsGetItemModalOpen(true);
-
                     setRandomPoke(null);
                     setMyPoke(null);
                     fetchRandomPokemon();
 
                 } else if (myPower < randomPower) {
-                    // alert("まけた！ざんねん！");
                     setIsLoseModalOpen(true);
                     setRandomPoke(null);
                     setMyPoke(null);
                     fetchRandomPokemon();
                 } else {
-                    // alert("あいこ");
                     setIsLoseModalOpen(true);
                     setRandomPoke(null);
                     setMyPoke(null);
@@ -139,24 +128,25 @@ export default function Battle() {
                                     opacity: "1",
                                 }
                             }}>ばとる</button>
-                        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
-                            {typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem("catchedPokes") || "[]").map((poke, index) => (
-                                <img
-                                    key={index}
-                                    src={poke.sprites}
-                                    alt={poke.name}
-                                    style={{
-                                        width: "70px", height: "70px", objectFit: "cover", cursor: "pointer",
-                                        border: myPoke?.id === poke.id ? "2px solid red" : "2px solid #ddd",
-                                        borderRadius: "10%",
-                                    }}
-                                    onClick={() => setMyPoke(poke)}
-                                    value={JSON.stringify(poke)}
-                                />
-                            ))}
-                        </div>
                     </div>
-                </>)}
+                    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
+                        {typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem("catchedPokes") || "[]").map((poke, index) => (
+                            <img
+                                key={index}
+                                src={poke.sprites}
+                                alt={poke.name}
+                                style={{
+                                    width: "70px", height: "70px", objectFit: "cover", cursor: "pointer",
+                                    border: myPoke?.id === poke.id ? "2px solid red" : "2px solid #ddd",
+                                    borderRadius: "10%",
+                                }}
+                                onClick={() => setMyPoke(poke)}
+                                value={JSON.stringify(poke)}
+                            />
+                        ))}
+                    </div>
+                </>)
+            }
         </>
     );
 }

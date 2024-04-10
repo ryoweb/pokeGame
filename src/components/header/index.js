@@ -2,9 +2,9 @@
 import Link from 'next/link';
 export default function Header() {
     return (
-        <header className="bg-blue-500 h-10vh">
+        <header className="h-16 bg-teal-500 text-white flex items-center justify-center">
             <div className="flex justify-between">
-            <Link href="/zukan" className="text-white hover:text-gray-200 px-2">
+                <Link href="/zukan" className="text-white hover:text-gray-200 px-2">
                     ずかん
                 </Link>
                 <Link href="/temoti-pokes" className="text-white hover:text-gray-200 px-2">
