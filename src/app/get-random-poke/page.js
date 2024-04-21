@@ -47,6 +47,7 @@ export default function GetRandomPoke() {
     // ランダムなポケモンを取得
     const fetchRandomPokemon = () => {
         setIsLoading(true);
+        setSelectedItem(null);
         const randomId = Math.floor(Math.random() * 1010) + 1;
         fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`)
             .then((res) => res.json())
